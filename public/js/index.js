@@ -3,16 +3,11 @@
     // ES6 will not work on browsers other than chrome.
     socket.on('connect', function() {
         console.log('Connected to server !!');
-        
-        socket.emit('createMessage', {
-            from: 'User2',
-            text: 'Hey, this is message from a user'
-        });
     });
 
     socket.on('disconnect', function() {
     console.log('Disconnected from server !! ');
-    })  
+    });
 
     socket.on('newMessage', function(message){
         console.log('newMessage !! ', message);
