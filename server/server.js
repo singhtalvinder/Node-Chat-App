@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 var app = express();
 // setup public middleware folder.
 app.use(express.static(publicPath));
-app.listen(3000, () =>
+app.listen(port, () =>
 {
     console.log(`Server started at port ${port} `);
 });
