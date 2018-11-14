@@ -3,6 +3,8 @@ const http = require('http'); // No need to install it as its a built-in module.
 const path = require('path'); // No need to install it as its a built-in module.
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
+
 // path helps in handling directories in a very effecient manner.
 const publicPath = path.join(__dirname, "../public");
 
@@ -19,16 +21,11 @@ io.on('connection', (socket) => {
     console.log('New user connected !! ');
 
     // Welcome message for the chat .
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'welcome to the chat app !!'
-    });
+    socket.emit('newMessage', generateMessage('Admin', 'welcome to the chat app !!'));
+    
 
     // Chat update message.
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'new user joined',
-    });
+    socket.broadcast.emit('newMessage',generateMessage('Admin','new user joined'));
 
     socket.on('disconnect', () => {
         console.log('Client disconnected from server !! ');
@@ -36,14 +33,11 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message) => {
         console.log('Created Message:', message);
-                
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
+       
         // Emit message to every connected user.
-        // but not to itself. 
+        // but not to itself.
+        io.emit('newMessage', generateMessage(message.from, message.text));
+        
         /*
         socket.broadcast.emit('newMessage',  {
             from: message.from,
@@ -52,7 +46,6 @@ io.on('connection', (socket) => {
         });
         */
     });
-
 
     /*socket.on('disconnect', () => {
         console.log('Client disconnected from server !! ');
