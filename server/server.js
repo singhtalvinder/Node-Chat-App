@@ -31,13 +31,13 @@ io.on('connection', (socket) => {
         console.log('Client disconnected from server !! ');
     });
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         console.log('Created Message:', message);
        
         // Emit message to every connected user.
         // but not to itself.
         io.emit('newMessage', generateMessage(message.from, message.text));
-        
+        callback('This is from the server');
         /*
         socket.broadcast.emit('newMessage',  {
             from: message.from,
