@@ -3,7 +3,7 @@ const http = require('http'); // No need to install it as its a built-in module.
 const path = require('path'); // No need to install it as its a built-in module.
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 // path helps in handling directories in a very effecient manner.
 const publicPath = path.join(__dirname, "../public");
@@ -38,13 +38,13 @@ io.on('connection', (socket) => {
         // but not to itself.
         io.emit('newMessage', generateMessage(message.from, message.text));
         callback('This is from the server');
-        /*
-        socket.broadcast.emit('newMessage',  {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        });
-        */
+
+    });
+
+    // Pass location info back and forth between users.
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage', 
+        generateLocationMessage('Admin', coords.latitude, coords.longitude));
     });
 
     /*socket.on('disconnect', () => {

@@ -16,6 +16,18 @@
         jQuery('#messages').append(li);
     });
 
+    socket.on('newLocationMessage', function(message) {
+        console.log('newLocationMessage----- ', message);
+        var li = jQuery('<li></li>');
+        // anchor tag for location link to open in new tab(_blank used).
+        var a =jQuery('<a target="_blank">My current location</a>');
+        
+        li.text(`${message.from}: `);
+        a.attr('href', message.url);
+        li.append(a);
+        jQuery('#messages').append(li);        
+    });
+
     /*
      //Not needed
      socket.emit('createMessage', {
@@ -38,6 +50,30 @@
             // acknowledgement func.
         });
     });
+
+
+    var locationButton = jQuery('#send-location');
+    locationButton.on('click', function() {
+        // check if user has access to geolocation api.
+        if(!navigator.geolocation) {
+            return alert('Your browser doesnot support Geolocation!!');
+        }
+
+        navigator.geolocation.getCurrentPosition(function (position) {
+
+            // success case.
+            console.log(position);
+            // process location latitude and longitude.
+            socket.emit('createLocationMessage', {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+            });
+        }, function() {
+            // error case 
+            alert('Unable to fetch location !! ');
+        });
+    });
+
 
 
     /*
