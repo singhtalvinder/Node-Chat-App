@@ -1,5 +1,27 @@
     var socket = io(); //<!-- initiating a request... >
     
+// fn to control the scrolling in the chat window.
+function scrollToBottom() {
+    // selectors
+    var messages = jQuery('#messages');
+    var newMessage = messages.children('li:last-child');
+    
+    // height.
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    
+    // get second last message.
+    var lastMessageHeight = newMessage.prev().innerHeight();
+
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+
+
+}
+
     // ES6 will not work on browsers other than chrome.
     socket.on('connect', function() {
         console.log('Connected to server !!');
@@ -19,14 +41,7 @@
         });
 
         jQuery('#messages').append(html);
-        /*
-        // Show formatted time for the messages
-        var formattedTime = moment(message.createdAt).format('h:mm:ss a');
-        console.log('newMessage !! ', message);
-        var li = jQuery('<li></li>');
-        li.text(`${message.from} ${formattedTime}: ${message.text}`);
-        jQuery('#messages').append(li);
-        */
+        scrollToBottom();
     });
 
     socket.on('newLocationMessage', function(message) {
@@ -41,28 +56,8 @@
         });
 
         jQuery('#messages').append(html);
-        /*
-        var li = jQuery('<li></li>');
-        // anchor tag for location link to open in new tab(_blank used).
-        var a =jQuery('<a target="_blank">My current location</a>');
-        
-        li.text(`${message.from}: ${formattedTime}:`);
-        a.attr('href', message.url);
-        li.append(a);
-        jQuery('#messages').append(li);
-        */        
+        scrollToBottom();
     });
-
-    /*
-     //Not needed
-     socket.emit('createMessage', {
-        from: 'Mark',
-        text: 'Hello there!!'
-    }, function(data){ // data is what is returned from the callback of the 
-        //socket.on('createMessage',  method in the server.
-        console.log('Got the message', data);
-    });
-    */
 
     // using jQuery to avoid the page refresh and 
     // not to send the form data as appended content to the url.
