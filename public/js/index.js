@@ -10,19 +10,23 @@
     });
 
     socket.on('newMessage', function(message){
+        // Show formatted time for the messages
+        var formattedTime = moment(message.createdAt).format('h:mm:ss a');
         console.log('newMessage !! ', message);
         var li = jQuery('<li></li>');
-        li.text(`${message.from}: ${message.text}`);
+        li.text(`${message.from} ${formattedTime}: ${message.text}`);
         jQuery('#messages').append(li);
     });
 
     socket.on('newLocationMessage', function(message) {
+        // Show formatted time for the messages
+        var formattedTime = moment(message.createdAt).format('h:mm:ss a');
         console.log('newLocationMessage----- ', message);
         var li = jQuery('<li></li>');
         // anchor tag for location link to open in new tab(_blank used).
         var a =jQuery('<a target="_blank">My current location</a>');
         
-        li.text(`${message.from}: `);
+        li.text(`${message.from}: ${formattedTime}:`);
         a.attr('href', message.url);
         li.append(a);
         jQuery('#messages').append(li);        
