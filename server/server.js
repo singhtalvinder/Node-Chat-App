@@ -37,7 +37,7 @@ io.on('connection', (socket) => {
         // Emit message to every connected user.
         // but not to itself.
         io.emit('newMessage', generateMessage(message.from, message.text));
-        callback('This is from the server');
+        callback();//This is from the server');
 
     });
 

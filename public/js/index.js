@@ -43,14 +43,16 @@
     // not to send the form data as appended content to the url.
     jQuery('#message-form').on('submit', function(e) {
         e.preventDefault();
+        var messageTextbox = jQuery('[name=message');
+
         socket.emit('createMessage', {
             from: 'User',
-            text: jQuery('[name=message]').val()
+            text: messageTextbox.val()
         }, function() {
             // acknowledgement func.
+            jQuery(messageTextbox).val(''); // clear the content there.
         });
     });
-
 
     var locationButton = jQuery('#send-location');
     locationButton.on('click', function() {
@@ -59,9 +61,13 @@
             return alert('Your browser doesnot support Geolocation!!');
         }
 
-        navigator.geolocation.getCurrentPosition(function (position) {
+        // disable the send location btn till it is processing.
+        locationButton.attr('disabled', 'disabled').text('Sending location...'); 
 
+        navigator.geolocation.getCurrentPosition(function (position) {
             // success case.
+            // remove disabled attribute.
+            locationButton.removeAttr('disabled').text('Send location');
             console.log(position);
             // process location latitude and longitude.
             socket.emit('createLocationMessage', {
@@ -70,11 +76,11 @@
             });
         }, function() {
             // error case 
+            // remove disabled attribute.
+            locationButton.removeAttr('disabled').text('Send location');;
             alert('Unable to fetch location !! ');
         });
     });
-
-
 
     /*
     // Test code:
