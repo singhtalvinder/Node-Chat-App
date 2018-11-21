@@ -18,17 +18,39 @@ function scrollToBottom() {
     if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
         messages.scrollTop(scrollHeight);
     }
-
-
 }
 
     // ES6 will not work on browsers other than chrome.
     socket.on('connect', function() {
         console.log('Connected to server !!');
+        var params = jQuery.deparam(window.location.search);
+        
+        socket.emit('join', params, function(err) {
+            if(err) {
+                alert(err);
+                window.location.href ='/'; // go back to root page.
+            } else {
+                console.log('No erro , will connet to corrct rooom');
+
+            }
+        });
     });
 
     socket.on('disconnect', function() {
     console.log('Disconnected from server !! ');
+    });
+
+    socket.on('updateUserList', function(users) {
+        // get the users array and update the display accordingly.
+        console.log('User list :', users);
+        var ol = jQuery('<ol> </ol>');
+        users.forEach(function(user) {
+            ol.append(jQuery('<li> </li>').text(user));
+        });
+
+        // render it, replace with a new one everytime.
+        jQuery('#users').html(ol);
+
     });
 
     socket.on('newMessage', function(message){
