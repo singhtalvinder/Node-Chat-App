@@ -88,7 +88,7 @@ function scrollToBottom() {
         var messageTextbox = jQuery('[name=message');
 
         socket.emit('createMessage', {
-            from: 'User',
+            // usrname should be added as per the user.
             text: messageTextbox.val()
         }, function() {
             // acknowledgement func.

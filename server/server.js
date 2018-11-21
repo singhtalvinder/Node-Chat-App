@@ -66,25 +66,30 @@ io.on('connection', (socket) => {
         }
     });
 
+    // chat messages.
     socket.on('createMessage', (message, callback) => {
         console.log('Created Message:', message);
        
-        // Emit message to every connected user.
-        // but not to itself.
-        io.emit('newMessage', generateMessage(message.from, message.text));
+        var user = users.getUser(socket.id);
+        if(user && isRealString(message.text)) {
+            // Emit message to every connected user.
+            // but not to itself.
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+        }
+        
         callback();//This is from the server');
 
     });
 
     // Pass location info back and forth between users.
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newLocationMessage', 
-        generateLocationMessage('Admin', coords.latitude, coords.longitude));
-    });
+        var user = users.getUser(socket.id);
 
-    /*socket.on('disconnect', () => {
-        console.log('Client disconnected from server !! ');
-    });*/
+        if(user) {
+            io.to(user.room).emit('newLocationMessage', 
+                generateLocationMessage(user.name, coords.latitude, coords.longitude));
+        }
+    });
 });
 
 server.listen(port, () =>
